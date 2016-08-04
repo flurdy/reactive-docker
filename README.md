@@ -32,13 +32,15 @@ import scala.concurrent.ExecutionContext.Implicits.global
 
 implicit val docker = Docker("localhost")
 
-val maybeImages = docker.images()
-val maybeContainers = docker.containers()
+for {
+   images <- docker.images().toList
+   image  <- images
+} println(s"Image: $image")
 
 for {
-	images <- maybeImages
-	containers <- maybeContainers} yield {
-	images.map(i => println(s"Image: $i"))	containers.map(c => println(s"Container: $c"))}
+   containers <- docker.containers().toList
+   container  <- containers
+} println(s"Container: $container")
 
 ```
 
